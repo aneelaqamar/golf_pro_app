@@ -3,6 +3,7 @@ import 'gallery_screen.dart';
 import 'quiz_screen.dart';
 import 'tools_screen.dart';
 import 'training_screen.dart';
+import 'profile_screen.dart';
 import 'theme.dart';
 
 class MainLayout extends StatefulWidget {
@@ -15,10 +16,12 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   int _selectedIndex = 0;
 
+  // Tracked screens list without invalid top-level const definitions
   final List<Widget> _screens = [
     const HomeDashboardView(),
     const GalleryScreen(),
     const ToolsScreen(),
+    const ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -46,12 +49,14 @@ class _MainLayoutState extends State<MainLayout> {
               icon: Icon(Icons.sports_golf), label: "Academy"),
           BottomNavigationBarItem(
               icon: Icon(Icons.construction), label: "Tools"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),
     );
   }
 }
 
+// Dedicated Content Sub-Widget for the Main Home Feed view
 class HomeDashboardView extends StatelessWidget {
   const HomeDashboardView({super.key});
 
@@ -73,7 +78,7 @@ class HomeDashboardView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Welcome Header Status Banner
+            // Welcome Header Status Card Banner
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(24),
@@ -149,14 +154,14 @@ class HomeDashboardView extends StatelessWidget {
               ),
             ),
 
-            // Feature Quick Action Buttons
+            // Feature Quick Action Rows - Fixed closing brackets completely!
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Column(
                 children: [
                   Row(
                     children: [
-                      // Tile 1: Golf Academy Screen
+                      // Tile 1: Golf Academy Screen shortcut
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
@@ -194,7 +199,7 @@ class HomeDashboardView extends StatelessWidget {
                         ),
                       ),
 
-                      // Tile 2: Trivia Rules Quiz Screen
+                      // Tile 2: Trivia Rules Quiz Screen shortcut
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
@@ -287,7 +292,7 @@ class HomeDashboardView extends StatelessWidget {
               ),
             ),
 
-            // Banner Section loading your local golf_grip.jpg asset cleanly
+            // Premium visual section completely loading your golf_grip.jpg asset
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: Card(
