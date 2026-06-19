@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
-import 'theme.dart';
 import 'splash_screen.dart';
+import 'theme.dart';
 
 void main() {
-  runApp(const GolfProApp());
+  runApp(const MyApp());
 }
 
-class GolfProApp extends StatelessWidget {
-  const GolfProApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Golf Pro',
       debugShowCheckedModeBanner: false,
-      theme: GolfTheme.lightTheme,
-      home: const GolfSplashScreen(),
+      theme: ThemeData(
+        primaryColor: GolfTheme.primaryGreen,
+        scaffoldBackgroundColor: const Color(0xFFF5F7F5),
+        useMaterial3: true,
+      ),
+      // This sets the splash screen as the starting screen of your application
+      home: const SplashScreen(),
     );
   }
 }

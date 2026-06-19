@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'gallery_screen.dart';
+import 'quiz_screen.dart';
+import 'tools_screen.dart';
+import 'training_screen.dart';
 import 'theme.dart';
 
 class MainLayout extends StatefulWidget {
@@ -9,14 +13,47 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  int _currentIndex = 0;
+  int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    const HomeScreen(),
-    const InfoScreen(),
-    const PracticeScreen(),
+    const HomeDashboardView(),
+    const GalleryScreen(),
     const ToolsScreen(),
   ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _screens,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: GolfTheme.primaryGreen,
+        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.sports_golf), label: "Academy"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.construction), label: "Tools"),
+        ],
+      ),
+    );
+  }
+}
+
+class HomeDashboardView extends StatelessWidget {
+  const HomeDashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,296 +63,267 @@ class _MainLayoutState extends State<MainLayout> {
           "GOLF PRO",
           style: TextStyle(
               fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
+              letterSpacing: 1.5,
               color: Colors.white),
         ),
         backgroundColor: GolfTheme.primaryGreen,
-        centerTitle: true,
-        elevation: 4,
+        elevation: 2,
       ),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: _screens[_currentIndex],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: GolfTheme.primaryGreen,
-        selectedItemColor: GolfTheme.accentGold,
-        unselectedItemColor: Colors.white70,
-        showUnselectedLabels: true,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.collections), label: 'Gallery'),
-          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: 'Info'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.fitness_center), label: 'Practice'),
-          BottomNavigationBarItem(icon: Icon(Icons.build), label: 'Tools'),
-        ],
-      ),
-    );
-  }
-}
-
-// ==================== FEATURE 1: GALLERY/HOME (MULTIPLE IMAGES) ====================
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // Array matching your exact sidebar image assets!
-    final courses = [
-      {
-        "img": "assets/golf_course.jpg",
-        "title": "Championship Fairways",
-        "sub": "Perfect your drive setup and alignment"
-      },
-      {
-        "img": "assets/golf_course2.jpg",
-        "title": "Pebble Beach Links",
-        "sub": "Master coastal crosswinds and swing arcs"
-      },
-    ];
-
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        const Text("Featured Courses",
-            style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: GolfTheme.primaryGreen)),
-        const SizedBox(height: 12),
-
-        // This loop dynamically builds a premium card for every image in your list
-        ...courses.map((course) => Container(
-              height: 200,
-              margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: const [
-                  BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 6,
-                      offset: Offset(0, 4))
-                ],
-                image: DecorationImage(
-                  image: AssetImage(course["img"]!),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withOpacity(0.1),
-                      Colors.black.withOpacity(0.7),
-                    ],
-                  ),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(course["title"]!,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold)),
-                      Text(course["sub"]!,
-                          style: const TextStyle(
-                              color: GolfTheme.accentGold, fontSize: 14)),
-                    ],
-                  ),
-                ),
-              ),
-            )),
-      ],
-    );
-  }
-}
-
-// ==================== FEATURE 2: INFORMATION ====================
-class InfoScreen extends StatelessWidget {
-  const InfoScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final rules = [
-      {
-        "title": "The Proper Grip Setup",
-        "desc":
-            "Master overlapping, interlocking, and 10-finger club holding methods."
-      },
-      {
-        "title": "Stance & Body Alignment",
-        "desc":
-            "Keep your feet parallel to target lines and shoulder-width apart."
-      },
-      {
-        "title": "Putting Green Etiquette",
-        "desc": "Basic country club rules regarding ball marker placements."
-      }
-    ];
-
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        Container(
-          height: 150,
-          margin: const EdgeInsets.only(bottom: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            image: const DecorationImage(
-              image: AssetImage('assets/golf_grip.jpg'),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        const Text("Training Handbooks",
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: GolfTheme.primaryGreen)),
-        const SizedBox(height: 8),
-        ...rules.map((rule) => Card(
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              elevation: 3,
-              child: ListTile(
-                leading: const CircleAvatar(
-                  backgroundColor: GolfTheme.accentGold,
-                  child: Icon(Icons.menu_book, color: Colors.white),
-                ),
-                title: Text(rule["title"]!,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text(rule["desc"]!),
-                trailing: const Icon(Icons.arrow_forward_ios,
-                    size: 16, color: GolfTheme.primaryGreen),
-              ),
-            )),
-      ],
-    );
-  }
-}
-
-// ==================== FEATURE 3: PRACTICE (WITH PHOTOS) ====================
-class PracticeScreen extends StatelessWidget {
-  const PracticeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView.count(
-      padding: const EdgeInsets.all(16),
-      crossAxisCount: 2,
-      crossAxisSpacing: 16,
-      mainAxisSpacing: 16,
-      children: [
-        _buildPracticeCard(
-            "assets/driving_range.jpg", "Driving Range", "3 Drills"),
-        _buildPracticeCard(
-            "assets/putting_green.jpg", "Putting Green", "5 Drills"),
-      ],
-    );
-  }
-
-  Widget _buildPracticeCard(String imagePath, String title, String subtitle) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
-        ),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
-        ],
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.black.withOpacity(0.2),
-              Colors.black.withOpacity(0.75)
-            ],
-          ),
-        ),
-        padding: const EdgeInsets.all(12),
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style: const TextStyle(
-                    color: Colors.white,
+            // Welcome Header Status Banner
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(24),
+              decoration: const BoxDecoration(
+                color: GolfTheme.primaryGreen,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(32),
+                  bottomRight: Radius.circular(32),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Welcome back, Player!",
+                      style: TextStyle(color: Colors.white70, fontSize: 16)),
+                  const SizedBox(height: 4),
+                  const Text("Ready for a Perfect Round?",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          children: [
+                            Text("LAST SCORE",
+                                style: TextStyle(
+                                    color: Colors.white60, fontSize: 12)),
+                            SizedBox(height: 4),
+                            Text("+4 (76)",
+                                style: TextStyle(
+                                    color: GolfTheme.accentGold,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text("HANDICAP",
+                                style: TextStyle(
+                                    color: Colors.white60, fontSize: 12)),
+                            SizedBox(height: 4),
+                            Text("12.4",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const Padding(
+              padding: EdgeInsets.only(left: 20, top: 24, bottom: 12),
+              child: Text(
+                "Quick Actions",
+                style: TextStyle(
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16)),
-            const SizedBox(height: 2),
-            Text(subtitle,
-                style:
-                    const TextStyle(color: GolfTheme.accentGold, fontSize: 12)),
+                    color: GolfTheme.primaryGreen),
+              ),
+            ),
+
+            // Feature Quick Action Buttons
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      // Tile 1: Golf Academy Screen
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const GalleryScreen()),
+                            );
+                          },
+                          child: Container(
+                            height: 100,
+                            margin: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 8)
+                              ],
+                            ),
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.menu_book,
+                                    color: GolfTheme.primaryGreen, size: 32),
+                                SizedBox(height: 6),
+                                Text("Golf Academy",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // Tile 2: Trivia Rules Quiz Screen
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const QuizScreen()),
+                            );
+                          },
+                          child: Container(
+                            height: 100,
+                            margin: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 8)
+                              ],
+                            ),
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.quiz,
+                                    color: GolfTheme.accentGold, size: 32),
+                                SizedBox(height: 6),
+                                Text("Rules Quiz",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // Row 2: Full width Pro Training Tracker shortcut
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const TrainingScreen()),
+                      );
+                    },
+                    child: Container(
+                      height: 75,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 8)
+                        ],
+                      ),
+                      child: const ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.amber,
+                          child:
+                              Icon(Icons.fitness_center, color: Colors.white),
+                        ),
+                        title: Text("Active Training Program",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 14)),
+                        subtitle:
+                            Text("Track your daily drills & completion speed"),
+                        trailing: Icon(Icons.arrow_forward_ios,
+                            size: 16, color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const Padding(
+              padding: EdgeInsets.only(left: 20, top: 24, bottom: 12),
+              child: Text(
+                "Featured Training Insight",
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: GolfTheme.primaryGreen),
+              ),
+            ),
+
+            // Banner Section loading your local golf_grip.jpg asset cleanly
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              child: Card(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'assets/golf_grip.jpg',
+                      height: 170,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 170,
+                          color: Colors.grey.shade200,
+                          child: const Icon(Icons.image_not_supported,
+                              size: 40, color: Colors.grey),
+                        );
+                      },
+                    ),
+                    const ListTile(
+                      title: Text("Mastering Your Club Interlock Grip",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: Text(
+                          "Securing a uniform connection ensures your clubface points square at impact for straighter shots."),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// ==================== FEATURE 4: TOOLS ====================
-class ToolsScreen extends StatelessWidget {
-  const ToolsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text("Digital Toolkit",
-              style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: GolfTheme.primaryGreen)),
-          const SizedBox(height: 16),
-          ListTile(
-            tileColor: Colors.white,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            leading: const Icon(Icons.calculate, color: GolfTheme.accentGold),
-            title: const Text("Digital Scorecard Counter"),
-            subtitle: const Text("Track Strokes, Putts & Penalties locally"),
-            trailing:
-                const Icon(Icons.add_circle, color: GolfTheme.primaryGreen),
-            onTap: () {},
-          ),
-          const SizedBox(height: 12),
-          ListTile(
-            tileColor: Colors.white,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            leading: const Icon(Icons.straighten, color: GolfTheme.accentGold),
-            title: const Text("Club Distance Estimator"),
-            subtitle: const Text("Log your average club yardages"),
-            trailing: const Icon(Icons.edit, color: GolfTheme.primaryGreen),
-            onTap: () {},
-          ),
-        ],
       ),
     );
   }
